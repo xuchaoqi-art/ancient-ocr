@@ -4,10 +4,8 @@ FROM python:3.11-slim as builder
 # 设置工作目录
 WORKDIR /build
 
-# 安装系统依赖（含判空，防止 sed 失败）
-RUN [ -f /etc/apt/sources.list ] && \
-    sed -i 's@http://.*.ubuntu.com@http://mirrors.aliyun.com@g' /etc/apt/sources.list ; \
-    apt-get update && apt-get install -y \
+# 安装系统依赖（无换源）
+RUN apt-get update && apt-get install -y \
         build-essential \
         cmake \
         git \
@@ -25,10 +23,8 @@ RUN python -c "from paddleocr import PaddleOCR; PaddleOCR(use_angle_cls=True, la
 # 最终镜像
 FROM python:3.11-slim
 
-# 安装运行时依赖（同样先判空）
-RUN [ -f /etc/apt/sources.list ] && \
-    sed -i 's@http://.*.ubuntu.com@http://mirrors.aliyun.com@g' /etc/apt/sources.list ; \
-    apt-get update && apt-get install -y \
+# 安装运行时依赖（无换源）
+RUN apt-get update && apt-get install -y \
         libgl1-mesa-glx \
         libglib2.0-0 \
         libsm6 \
