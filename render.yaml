@@ -1,0 +1,23 @@
+# Render部署配置
+services:
+  - type: web
+    name: ancient-ocr
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 300 app:app"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: PORT
+        value: 5000
+    healthCheckPath: /
+    disk:
+      name: uploads
+      mountPath: /app/uploads
+      sizeGB: 2
+    
+# 资源限制（适配免费配额）
+# 内存: 512MB
+# CPU: 0.1 vCPU
+# 磁盘: 2GB
+# 月度使用时间: 500小时
