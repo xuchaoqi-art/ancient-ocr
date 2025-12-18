@@ -5,12 +5,13 @@ FROM python:3.11-slim as builder
 WORKDIR /build
 
 # 安装系统依赖
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    cmake \
-    git \
-    wget \
-    curl \
+RUN sed -i 's@http://.*.ubuntu.com@http://mirrors.aliyun.com@g' /etc/apt/sources.list && \
+    apt-get update && apt-get install -y \
+        build-essential \
+        cmake \
+        git \
+        wget \
+        curl \
     && rm -rf /var/lib/apt/lists/*
 
 # 复制requirements并安装Python依赖
@@ -24,18 +25,18 @@ RUN python -c "from paddleocr import PaddleOCR; PaddleOCR(use_angle_cls=True, la
 FROM python:3.11-slim
 
 # 安装运行时依赖
-RUN apt-get update && apt-get install -y \
-    # PaddleOCR依赖
-    libgl1-mesa-glx \
-    libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender-dev \
-    libgomp1 \
-    # pdf2image依赖
-    poppler-utils \
-    # 其他工具
-    curl \
+RUN sed -i 's@http://.*.ubuntu.com@http://mirrors.aliyun.com@g' /etc/apt/sources.list && \
+    apt-get update && apt-get install -y \
+        libgl1-mesa-glx \
+        libglib2.0-0 \
+        libsm6 \
+        libxext6 \
+        libxrender-dev \
+        libgomp1 \
+        # pdf2image依赖
+        poppler-utils \
+        # 其他工具
+        curl \
     && rm -rf /var/lib/apt/lists/*
 
 # 创建非root用户
